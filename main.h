@@ -5,13 +5,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/wait.h>
 #define BUFFSIZE 1024
+#define PARSESIZE 40
 #define BUILTIN 3
 
-int getuserinput(char **buf);
-int parsestring(char *text, char **parsed);
+char *getuserinput();
+char **parsestring(char *text);
 int isbuiltin(char **argv);
-void loopshell(char **buf, char **argz, char **argv);
+void loopshell(char **argv);
 void executecom(char **argz, char **argv);
 
 #endif
