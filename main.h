@@ -10,6 +10,8 @@
 #define PARSESIZE 40
 #define BUILTIN 3
 
+extern char **environ;
+
 char *getuserinput();
 char **parsestring(char *text);
 int isbuiltin(char **argv);

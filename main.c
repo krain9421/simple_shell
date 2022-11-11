@@ -16,6 +16,6 @@ int main(int argc, char **argv)
 		loopshell(argv);
 	}
 
-	return 0;
+	return (0);
 }
 
