@@ -89,7 +89,9 @@ void executecom(char **argz, char **argv)
 		perror(argv[0]);
 
 	else
-		wait(&status);
+	{
+		waitpid(pid, &status, WUNTRACED);
+	}
 }
 
 /**
