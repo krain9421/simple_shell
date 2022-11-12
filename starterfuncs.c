@@ -103,16 +103,24 @@ void executecom(char **argz, char **argv)
 
 void loopshell(char **argv)
 {
-	char *buf;
-	char **argz;
+	char *buf, *path, cwd[PATH_MAX];
+	char **argz, **parsedpath;
 
+	getcwd(cwd, sizeof(cwd));
 	while (1)
 	{
 		write(1, "sshll>", 6);
 		buf = getuserinput();
-		if (buf != NULL)
+		argz = parsestring(buf);
+		if (argz[0] != NULL)
 		{
-			argz = parsestring(buf);
+			if (argz[0][0] != '/')
+			{
+				parsedpath = getpaths();
+				path = getpath(parsedpath, argz[0], cwd);
+				if (path != NULL)
+					argz[0] = path;
+			}
 			executecom(argz, argv);
 			free(buf);
 			free(argz);
