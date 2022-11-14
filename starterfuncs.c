@@ -156,7 +156,7 @@ void loopshell(char **argv, char **env)
 {
 	char *buf, *path, cwd[PATH_MAX];
 	char **argz, **parsedpath;
-	int stat = 1;
+	int stat = 1, i = 0, isrelative = 0;
 
 	getcwd(cwd, sizeof(cwd));
 	do {
@@ -167,18 +167,21 @@ void loopshell(char **argv, char **env)
 		{
 			if (argz[0][0] != '/')
 			{
+				isrelative = 1;
 				parsedpath = getpaths(env);
 				path = getpath(parsedpath, argz[0], cwd);
 				argz[0] = path;
 			}
 			stat = executecom(argz, argv);
 			free(buf);
-			while (*argz)
-			{ free(*argz++); }
+			free(argz[0]);
 			free(argz);
-			while (*parsedpath)
-			{ free(*parsedpath++); }
-			free(parsedpath);
+			if (isrelative)
+			{
+				while (parsedpath[i])
+				{ free(parsedpath[i++]); }
+				free(parsedpath);
+			}
 		}
 		else
 		{

@@ -84,7 +84,10 @@ char *_strdup(char *src)
 	src_size = _strlen(src);
 	dup = malloc(sizeof(char) * src_size + 1);
 	if (dup == NULL)
+	{
+		free(dup);
 		return ((char *) NULL);
+	}
 
 	dup_offset = dup;
 	while (src[i])
