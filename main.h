@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
 #define BUFFSIZE 1024
 #define PARSESIZE 40
 #define BUILTIN 3
@@ -18,13 +19,15 @@ extern char **environ;
 char *getuserinput();
 char **parsestring(char *text);
 int isbuiltin(char **argv);
-void loopshell(char **argv);
-void executecom(char **argz, char **argv);
+void loopshell(char **argv, char **env);
+int executecom(char **argz, char **argv);
 char *_getenv(const char *name);
 char **getpaths();
 char *getpath(char **parsedpath, char *exe, const char *src);
 char *_strcat(char *dest, char *src);
 char *_strcpy(char *dest, char *src);
+int _strlen(const char *str);
+char *_strdup(char *src);
 
 #endif
 

@@ -11,6 +11,7 @@
 char *_getenv(const char *name)
 {
 	int i = 0, j = 0;
+	char *finalpath;
 
 	while (environ[i])
 	{
@@ -23,7 +24,8 @@ char *_getenv(const char *name)
 		}
 		if (name[j] == '\0')
 		{
-			return (environ[i]);
+			finalpath = _strdup(environ[i] + _strlen(name) + 1);
+			return (finalpath);
 		}
 		i++;
 	}
@@ -31,33 +33,32 @@ char *_getenv(const char *name)
 }
 
 /**
-* getpaths - stores all the paths in an array
+* getpaths - stores all the path values in an array
 *
 * Return: string array containing each path
 */
 
 char **getpaths()
 {
-	char *parse;
-	char *pathvalue;
-	char *value = malloc(1024 * sizeof(char));
-	int i = 0;
+	char *parse, *pathvalue;
+	int i = 0, sz = PARSESIZE;
 	char **parsedpath;
 
-	parsedpath = malloc(100 * sizeof(char *));
+	parsedpath = malloc(sz * sizeof(char *));
 	if (parsedpath == NULL)
 		exit(EXIT_FAILURE);
 
 	pathvalue = _getenv("PATH");
-	value = _strcpy(value, pathvalue);
-	parse = strtok(value, "PATH= :");
+	parse = strtok(pathvalue, ":");
 	while (parse != NULL)
 	{
-		parsedpath[i++] = parse;
+		parsedpath[i++] = _strdup(parse);
 		parse = strtok(NULL, ":");
 	}
 	parsedpath[i] = NULL;
 	free(parse);
+	free(pathvalue);
+
 	return (parsedpath);
 }
 
@@ -73,73 +74,41 @@ char **getpaths()
 
 char *getpath(char **parsedpath, char *exe, const char *src)
 {
-	int j = 0;
+	int j = 0, k = 0, len;
 	struct stat st;
+	char *parsedpathcpy, *execpy;
+
+	execpy = _strdup(exe);
+	while (execpy[k] != '/' && execpy[k] != '\0')
+	{ k++; }
+	if (execpy[k] == '/')
+	{ execpy = NULL; }
 
 	while (parsedpath[j])
 	{
+		len = _strlen(parsedpath[j]) + _strlen(exe);
+		parsedpathcpy = malloc((len + 2) * sizeof(char *));
+		if (parsedpath == NULL)
+		{ exit(1); }
+		parsedpathcpy = _strcpy(parsedpathcpy, parsedpath[j]);
 		chdir(parsedpath[j]);
-		if (exe)
+		if (execpy != NULL)
 		{
-			if (stat(exe, &st) == 0)
+			if (stat(execpy, &st) == 0)
 			{
-				parsedpath[j] =  _strcat(parsedpath[j], "/");
-				parsedpath[j] = _strcat(parsedpath[j], exe);
+				parsedpathcpy =  _strcat(parsedpathcpy, "/");
+				parsedpathcpy = _strcat(parsedpathcpy, execpy);
+				free(execpy);
 				chdir(src);
-				return (parsedpath[j]);
+				return (parsedpathcpy);
 			}
 		}
+		free(parsedpathcpy);
 		j++;
 	}
 	chdir(src);
+	errno = 2;
 	return (parsedpath[j]);
 }
 
-/**
-* _strcat - concatenates two strings
-* @dest: destination string
-* @src: source string
-*
-* Return: concatenated string
-*/
-
-char *_strcat(char *dest, char *src)
-{
-	int i = 0;
-	int j = 0;
-
-	while (dest[i])
-	{
-		i++;
-	}
-	while (src[j])
-	{
-		dest[i] = src[j];
-		i++;
-		j++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
-/**
-* _strcpy - copies a string
-* @dest: destination string
-* @src: source string
-*
-* Return: copied string
-*/
-
-char *_strcpy(char *dest, char *src)
-{
-	int i = 0;
-
-	while (src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
 

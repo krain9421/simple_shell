@@ -11,22 +11,16 @@ char *getuserinput()
 {
 	size_t sz = BUFFSIZE;
 	int bufsz;
-	char *tbuf = malloc(BUFFSIZE * sizeof(char));
+	char *tbuf;
 
+	tbuf = malloc(sz * sizeof(char));
 	if (tbuf == NULL)
 		exit(1);
 
 	bufsz = getline(&tbuf, &sz, stdin);
 	if (bufsz == -1)
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 
-	bufsz -= 1;
-	if (bufsz == 0)
-	{
-		tbuf = NULL;
-		return (tbuf);
-	}
-	tbuf[bufsz] = '\0';
 	return (tbuf);
 }
 
@@ -41,26 +35,32 @@ char *getuserinput()
 char **parsestring(char *text)
 {
 	int i = 0, sz = PARSESIZE;
-	char *parse;
-	char **tparsed = malloc(sz * sizeof(char *));
+	char *parse, *textcpy;
+	char **tparsed;
 
+	tparsed = malloc(sz * sizeof(char *));
 	if (tparsed == NULL)
 		exit(1);
 
-	if (text == NULL)
+	textcpy = _strdup(text);
+
+	if (textcpy == NULL)
 	{
 		tparsed[0] = NULL;
+		free(textcpy);
 		return (tparsed);
 	}
 
-	parse = strtok(text, "\0");
+	parse = strtok(text, "\n");
 	while (parse)
 	{
-		tparsed[i] = parse;
-		parse = strtok(NULL, " ");
+		tparsed[i] = _strdup(parse);
+		parse = strtok(NULL, "\n");
 		i++;
 	}
 	tparsed[i] = NULL;
+	free(parse);
+	free(textcpy);
 
 	return (tparsed);
 }
@@ -70,45 +70,56 @@ char **parsestring(char *text)
 * @argz: string vector that contains the command arguments
 * @argv: string vector from main
 *
-* Return: void
+* Return: 1 if successful
+* 0 if failed
 */
 
-void executecom(char **argz, char **argv)
+int executecom(char **argz, char **argv)
 {
 	pid_t pid;
-	int status;
 
-	pid = fork();
-
-	if (pid == 0)
+	if (argz[0])
 	{
-		if (execve(argz[0], argz, NULL) == -1)
-			perror(argv[0]);
-	}
-	else if (pid < 0)
-		perror(argv[0]);
+		pid = fork();
 
+		if (pid == 0)
+		{
+			if (execve(argz[0], argz, NULL) == -1)
+				perror(argv[0]);
+			return (1);
+		}
+		else if (pid < 0)
+			return (0);
+
+		else
+		{
+			wait(NULL);
+			return (1);
+		}
+	}
 	else
 	{
-		waitpid(pid, &status, WUNTRACED);
+		perror(argv[0]);
+		return (1);
 	}
 }
 
 /**
 * loopshell - runs the custom shell program in a loop
 * @argv: string vector from main
+* @env: environment vector from main
 *
 * Return: void
 */
 
-void loopshell(char **argv)
+void loopshell(char **argv, char **env)
 {
 	char *buf, *path, cwd[PATH_MAX];
 	char **argz, **parsedpath;
+	int stat = 1;
 
 	getcwd(cwd, sizeof(cwd));
-	while (1)
-	{
+	do {
 		write(1, "sshll>", 6);
 		buf = getuserinput();
 		argz = parsestring(buf);
@@ -116,17 +127,26 @@ void loopshell(char **argv)
 		{
 			if (argz[0][0] != '/')
 			{
-				parsedpath = getpaths();
+				parsedpath = getpaths(env);
 				path = getpath(parsedpath, argz[0], cwd);
-				if (path != NULL)
-					argz[0] = path;
+				argz[0] = path;
 			}
-			executecom(argz, argv);
+			stat = executecom(argz, argv);
 			free(buf);
+			while (*argz)
+			{ free(*argz++); }
 			free(argz);
+			while (*parsedpath)
+			{ free(*parsedpath++); }
+			free(parsedpath);
 		}
 		else
+		{
 			free(buf);
-	}
+			while (*argz)
+			{ free(*argz++); }
+			free(argz);
+		}
+	} while (stat);
 }
 
