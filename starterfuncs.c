@@ -37,36 +37,73 @@ char *getuserinput()
 
 char **parsestring(char *text)
 {
-	int i = 0, sz = PARSESIZE;
-	char *parse, *textcpy;
+	int i = 0, sz = 0;
+	char *parse, *textcpy, *textcpy2;
 	char **tparsed;
 
-	tparsed = malloc(sz * sizeof(char *));
-	if (tparsed == NULL)
-		exit(1);
-
-	textcpy = _strdup(text);
-
-	if (textcpy == NULL)
+	if (text == NULL)
 	{
+		tparsed = malloc(1 * sizeof(char *));
+		if (tparsed == NULL)
+		{ free(tparsed), exit(1); }
 		tparsed[0] = NULL;
-		free(textcpy);
 		return (tparsed);
 	}
-
+	textcpy = _strdup(text);
+	textcpy2 = _strdup(text);
+	/* Get size of the array to hold paths */
 	parse = strtok(textcpy, "\n");
+	while (parse)
+	{
+		printf("%s\n", parse);
+		parse = strtok(NULL, "\n");
+		sz++;
+	}
+	free(textcpy);
+	tparsed = malloc((sz + 1) * sizeof(char *));
+	if (tparsed == NULL)
+	{ free(tparsed), exit(1); }
+
+	parse = strtok(textcpy2, "\n");
 	while (parse)
 	{
 		tparsed[i] = _strdup(parse);
 		parse = strtok(NULL, "\n");
 		i++;
 	}
-	tparsed[i] = (NULL);
+	tparsed[i] = (char *) NULL;
 	free(parse);
-	free(textcpy);
+	free(textcpy2);
 
 	return (tparsed);
 }
+	/**
+	*tparsed = malloc(sz * sizeof(char *));
+	*if (tparsed == NULL)
+	*	exit(1);
+	*
+	*textcpy = _strdup(text);
+	*
+	*if (textcpy == NULL)
+	*{
+	*	tparsed[0] = NULL;
+	*	free(textcpy);
+	*	return (tparsed);
+	*}
+	*
+	*parse = strtok(textcpy, "\n");
+	*while (parse)
+	*{
+	*	tparsed[i] = _strdup(parse);
+	*	parse = strtok(NULL, "\n");
+	*	i++;
+	*}
+	*tparsed[i] = (NULL);
+	*free(parse);
+	*free(textcpy);
+	*
+	*return (tparsed);
+	*/
 
 /**
 * executecom - executes a program or command
