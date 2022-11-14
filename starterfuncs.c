@@ -11,15 +11,18 @@ char *getuserinput()
 {
 	size_t sz = BUFFSIZE;
 	int bufsz;
-	char *tbuf;
+	char *tbuf = NULL;
 
-	tbuf = malloc(sz * sizeof(char));
-	if (tbuf == NULL)
-		exit(1);
+	/*tbuf = malloc(sz * sizeof(char));*/
+	/*if (tbuf == NULL)*/
+		/*exit(1);*/
 
 	bufsz = getline(&tbuf, &sz, stdin);
 	if (bufsz == -1)
+	{
+		free(tbuf);
 		exit(EXIT_FAILURE);
+	}
 
 	return (tbuf);
 }
@@ -51,14 +54,14 @@ char **parsestring(char *text)
 		return (tparsed);
 	}
 
-	parse = strtok(text, "\n");
+	parse = strtok(textcpy, "\n");
 	while (parse)
 	{
 		tparsed[i] = _strdup(parse);
 		parse = strtok(NULL, "\n");
 		i++;
 	}
-	tparsed[i] = NULL;
+	tparsed[i] = (NULL);
 	free(parse);
 	free(textcpy);
 
@@ -143,8 +146,7 @@ void loopshell(char **argv, char **env)
 		else
 		{
 			free(buf);
-			while (*argz)
-			{ free(*argz++); }
+			free(argz[0]);
 			free(argz);
 		}
 	} while (stat);
