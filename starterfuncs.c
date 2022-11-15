@@ -55,10 +55,10 @@ char **parsestring(char *text)
 	parse = strtok(textcpy, "\n");
 	while (parse)
 	{
-		printf("%s\n", parse);
 		parse = strtok(NULL, "\n");
 		sz++;
 	}
+	free(parse);
 	free(textcpy);
 	tparsed = malloc((sz + 1) * sizeof(char *));
 	if (tparsed == NULL)
@@ -71,7 +71,7 @@ char **parsestring(char *text)
 		parse = strtok(NULL, "\n");
 		i++;
 	}
-	tparsed[i] = (char *) NULL;
+	tparsed[i] = NULL;
 	free(parse);
 	free(textcpy2);
 

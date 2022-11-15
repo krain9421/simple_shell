@@ -77,26 +77,24 @@ int _strlen(const char *str)
 
 char *_strdup(char *src)
 {
-	int src_size, i = 0;
+	int src_size = 0, i = 0;
 	static char *dup;
-	char *dup_offset;
+	/*char *dup_offset;*/
+
+	if (src == NULL)
+	{
+		return (NULL);
+	}
 
 	src_size = _strlen(src);
-	dup = malloc(sizeof(char) * src_size + 1);
+	dup = malloc(sizeof(char) * (src_size + 1));
+
 	if (dup == NULL)
 	{
 		free(dup);
-		return ((char *) NULL);
+		exit(1);
+		/*return (NULL);*/
 	}
-
-	dup_offset = dup;
-	while (src[i])
-	{
-		*dup_offset = src[i];
-		dup_offset++;
-		i++;
-	}
-	*dup_offset = '\0';
 
 	return (dup);
 }
