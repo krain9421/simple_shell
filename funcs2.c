@@ -88,8 +88,8 @@ char *getpath(char **parsedpath, char *exe, const char *src)
 	{
 		len = _strlen(parsedpath[j]) + _strlen(exe);
 		parsedpathcpy = malloc((len + 2) * sizeof(char *));
-		if (parsedpath == NULL)
-		{ exit(1); }
+		if (parsedpathcpy == NULL)
+		{ free(parsedpathcpy), exit(1); }
 		parsedpathcpy = _strcpy(parsedpathcpy, parsedpath[j]);
 		chdir(parsedpath[j]);
 		if (execpy != NULL)

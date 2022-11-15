@@ -20,7 +20,7 @@ char *getuserinput();
 char **parsestring(char *text);
 int isbuiltin(char **argv);
 void loopshell(char **argv, char **env);
-int executecom(char **argz, char **argv);
+int executecom(char **argz, char **argv, char **env);
 char *_getenv(const char *name);
 char **getpaths();
 char *getpath(char **parsedpath, char *exe, const char *src);

@@ -114,7 +114,7 @@ char **parsestring(char *text)
 * 0 if failed
 */
 
-int executecom(char **argz, char **argv)
+int executecom(char **argz, char **argv, char **env)
 {
 	pid_t pid;
 
@@ -124,12 +124,15 @@ int executecom(char **argz, char **argv)
 
 		if (pid == 0)
 		{
-			if (execve(argz[0], argz, NULL) == -1)
+			if (execve(argz[0], argz, env) == -1)
 				perror(argv[0]);
 			return (1);
 		}
 		else if (pid < 0)
+		{
+			wait(NULL);
 			return (0);
+		}
 
 		else
 		{
@@ -140,6 +143,7 @@ int executecom(char **argz, char **argv)
 	else
 	{
 		perror(argv[0]);
+		wait(NULL);
 		return (1);
 	}
 }
@@ -168,11 +172,12 @@ void loopshell(char **argv, char **env)
 			if (argz[0][0] != '/')
 			{
 				isrelative = 1;
-				parsedpath = getpaths(env);
+				parsedpath = getpaths();
 				path = getpath(parsedpath, argz[0], cwd);
-				argz[0] = path;
+				free(argz[0]);
+				argz[0] = _strdup(path);
 			}
-			stat = executecom(argz, argv);
+			stat = executecom(argz, argv, env);
 			free(buf);
 			free(argz[0]);
 			free(argz);
@@ -181,6 +186,7 @@ void loopshell(char **argv, char **env)
 				while (parsedpath[i])
 				{ free(parsedpath[i++]); }
 				free(parsedpath);
+				free(path);
 			}
 		}
 		else
