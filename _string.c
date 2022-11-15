@@ -78,8 +78,7 @@ int _strlen(const char *str)
 char *_strdup(char *src)
 {
 	int src_size = 0, i = 0;
-	static char *dup;
-	/*char *dup_offset;*/
+	char *dup;
 
 	if (src == NULL)
 	{
@@ -93,8 +92,14 @@ char *_strdup(char *src)
 	{
 		free(dup);
 		exit(1);
-		/*return (NULL);*/
 	}
+
+	while (src_size--)
+	{
+		dup[i] = src[i];
+		i++;
+	}
+	dup[i] = '\0';
 
 	return (dup);
 }
