@@ -24,14 +24,13 @@ void signalhandler(int sig)
 char *getuserinput()
 {
 	size_t sz = BUFFSIZE;
-	ssize_t read = 0;
 	char *tbuf;
 
 	tbuf = malloc(sz * sizeof(char));
 	if (tbuf == NULL)
 	{ free(tbuf), exit(EXIT_FAILURE); }
 
-	if ((read = getline(&tbuf, &sz, stdin)) != -1)
+	if (getline(&tbuf, &sz, stdin) != -1)
 	{
 		return (tbuf);
 	}
@@ -118,18 +117,18 @@ int executecom(char **argz, char **argv, char **env)
 	if (argz[0])
 	{
 		pid = fork();
-		printf("fork() called\n");
+		/*printf("fork() called\n");*/
 
 		if (pid == 0)
 		{
-		printf("Child[%d] started from Parent[%d]\n", getpid(), getppid());
+		/*printf("Child[%d] started from Parent[%d]\n", getpid(), getppid());*/
 			if (execve(argz[0], argz, env) == -1)
 			{
 				perror(argv[0]);
 				free(argz[0]), free(argz);
 			}
 
-			printf("Child[%d] ended\n", getpid());
+			/*printf("Child[%d] ended\n", getpid());*/
 			exit(EXIT_FAILURE);
 		}
 		else if (pid < 0)
@@ -140,10 +139,9 @@ int executecom(char **argz, char **argv, char **env)
 
 		else
 		{
-			printf("Parent[%d] started\n", getpid());
+			/*printf("Parent[%d] started\n", getpid());*/
 			wait(NULL);
-			printf("Parent[%d] ended\n", getpid());
-			return (1);
+			/*printf("Parent[%d] ended\n", getpid());*/
 		}
 	}
 	else
