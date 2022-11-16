@@ -41,7 +41,7 @@ char *_getenv(const char *name)
 char **getpaths()
 {
 	char *parse, *pathvalue, *pathvalue2;
-	int i = 0, sz = 0;
+	int i = 0, k = 0, sz = 0;
 	char **parsedpath;
 
 	/* Getting the size of the array to hold paths */
@@ -65,13 +65,17 @@ char **getpaths()
 	{
 		parsedpath[i] = _strdup(parse);
 		if (parsedpath[i] == NULL)
-		{ free(parsedpath[i]), exit(EXIT_FAILURE); }
+		{ 
+			for (; k < i; k++)
+			{ free(parsedpath[k]); }
+			free(parsedpath);
+			exit(EXIT_FAILURE); 
+		}
 		parse = strtok(NULL, ":");
 		i++;
 	}
 	parsedpath[i] = NULL;
-	free(parse);
-	free(pathvalue);
+	free(parse), free(pathvalue);
 	return (parsedpath);
 }
 

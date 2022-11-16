@@ -23,6 +23,12 @@ char *getuserinput()
 		free(tbuf);
 		exit(EXIT_FAILURE);
 	}
+	/* Usage: exit */
+	if (_strcmp(tbuf, "exit\n") == 0)
+	{
+		free(tbuf);
+		exit(EXIT_SUCCESS);
+	}
 
 	return (tbuf);
 }

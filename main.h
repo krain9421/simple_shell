@@ -28,6 +28,7 @@ char *_strcat(char *dest, char *src);
 char *_strcpy(char *dest, char *src);
 int _strlen(const char *str);
 char *_strdup(char *src);
+int _strcmp(char *s1, char *s2);
 
 #endif
 
