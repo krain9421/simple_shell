@@ -125,7 +125,7 @@ char *getpath(char **parsedpath, char *exe, const char *src)
 	}
 	free(execpy);
 	chdir(src);
-	errno = 2;
+	/*errno = 2;*/
 	return (_strdup(parsedpath[j]));
 }
 

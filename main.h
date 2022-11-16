@@ -9,7 +9,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <errno.h>
+/*#include <errno.h>*/
 #include <signal.h>
 #define BUFFSIZE 1024
 #define PARSESIZE 40
