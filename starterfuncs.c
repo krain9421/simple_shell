@@ -2,6 +2,20 @@
 #include <stdio.h>
 
 /**
+* signalhandler - catches a signal
+* @sig: int
+*
+* Return: void
+*/
+
+void signalhandler(int sig)
+{
+	signal(sig, SIG_IGN);
+	printf("OUCH, you hit Ctrl-C!\n");
+	exit(EXIT_SUCCESS);
+}
+
+/**
 * getuserinput - stores user input in a string
 *
 * Return: character pointer with stored input
@@ -10,19 +24,19 @@
 char *getuserinput()
 {
 	size_t sz = BUFFSIZE;
-	int bufsz;
-	char *tbuf = NULL;
+	ssize_t read = 0;
+	char *tbuf;
 
-	/*tbuf = malloc(sz * sizeof(char));*/
-	/*if (tbuf == NULL)*/
-		/*exit(1);*/
+	tbuf = malloc(sz * sizeof(char));
+	if (tbuf == NULL)
+	{ free(tbuf), exit(EXIT_FAILURE); }
 
-	bufsz = getline(&tbuf, &sz, stdin);
-	if (bufsz == -1)
+	if ((read = getline(&tbuf, &sz, stdin)) != -1)
 	{
-		free(tbuf);
-		exit(EXIT_FAILURE);
+		return (tbuf);
 	}
+	free(tbuf);
+	exit(EXIT_SUCCESS);
 	/* Usage: exit */
 	/**
 	*if (_strcmp(tbuf, "exit\n") == 0)
@@ -31,8 +45,6 @@ char *getuserinput()
 	*	exit(EXIT_SUCCESS);
 	*}
 	*/
-
-	return (tbuf);
 }
 
 /**
@@ -45,8 +57,8 @@ char *getuserinput()
 
 char **parsestring(char *text)
 {
-	int i = 0, sz = 0;
-	char *parse, *textcpy, *textcpy2;
+	int i = 0, sz = PARSESIZE;
+	char *parse, *textcpy2;
 	char **tparsed;
 
 	if (text == NULL)
@@ -57,18 +69,8 @@ char **parsestring(char *text)
 		tparsed[0] = NULL;
 		return (tparsed);
 	}
-	textcpy = _strdup(text);
 	textcpy2 = _strdup(text);
-	/* Get size of the array to hold paths */
-	parse = strtok(textcpy, "\n");
-	while (parse)
-	{
-		parse = strtok(NULL, "\n");
-		sz++;
-	}
-	free(parse);
-	free(textcpy);
-	tparsed = malloc((sz + 1) * sizeof(char *));
+	tparsed = malloc((sz) * sizeof(char *));
 	if (tparsed == NULL)
 	{ free(tparsed), exit(1); }
 
@@ -76,6 +78,8 @@ char **parsestring(char *text)
 	while (parse)
 	{
 		tparsed[i] = _strdup(parse);
+		if (tparsed[i] == NULL)
+		{ free(tparsed[i]), free(tparsed), exit(1); }
 		parse = strtok(NULL, "\n");
 		i++;
 	}
@@ -86,32 +90,16 @@ char **parsestring(char *text)
 	return (tparsed);
 }
 	/**
-	*tparsed = malloc(sz * sizeof(char *));
-	*if (tparsed == NULL)
-	*	exit(1);
-	*
-	*textcpy = _strdup(text);
-	*
-	*if (textcpy == NULL)
-	*{
-	*	tparsed[0] = NULL;
-	*	free(textcpy);
-	*	return (tparsed);
-	*}
-	*
-	*parse = strtok(textcpy, "\n");
-	*while (parse)
-	*{
-	*	tparsed[i] = _strdup(parse);
-	*	parse = strtok(NULL, "\n");
-	*	i++;
-	*}
-	*tparsed[i] = (NULL);
-	*free(parse);
-	*free(textcpy);
-	*
-	*return (tparsed);
-	*/
+	 *textcpy = _strdup(text);
+	 *parse = strtok(textcpy, "\n");
+	 *while (parse)
+	 *{
+	 *parse = strtok(NULL, "\n");
+	 *sz++;
+	 *}
+	 *free(parse);
+	 *free(textcpy);
+	 */
 
 /**
 * executecom - executes a program or command
@@ -130,17 +118,18 @@ int executecom(char **argz, char **argv, char **env)
 	if (argz[0])
 	{
 		pid = fork();
-		/*printf("fork() called\n");*/
+		printf("fork() called\n");
 
 		if (pid == 0)
 		{
-		/*printf("Child[%d] started from Parent[%d]\n", getpid(), getppid());*/
+		printf("Child[%d] started from Parent[%d]\n", getpid(), getppid());
 			if (execve(argz[0], argz, env) == -1)
 			{
 				perror(argv[0]);
+				free(argz[0]), free(argz);
 			}
 
-			/*printf("Child[%d] ended\n", getpid());*/
+			printf("Child[%d] ended\n", getpid());
 			exit(EXIT_FAILURE);
 		}
 		else if (pid < 0)
@@ -151,9 +140,10 @@ int executecom(char **argz, char **argv, char **env)
 
 		else
 		{
-			/*printf("Parent[%d] started\n", getpid());*/
+			printf("Parent[%d] started\n", getpid());
 			wait(NULL);
-			/*printf("Parent[%d] ended\n", getpid());*/
+			printf("Parent[%d] ended\n", getpid());
+			return (1);
 		}
 	}
 	else
@@ -176,13 +166,16 @@ void loopshell(char **argv, char **env)
 {
 	char *buf, *path = NULL, cwd[PATH_MAX];
 	char **argz, **parsedpath = NULL;
-	int stat = 1, i = 0, isrelative = 0;
+	int stat = 1, i = 0, k = 0, isrelative = 0;
 
 	getcwd(cwd, sizeof(cwd));
 	do {
 		write(1, "#cisfun$ ", 9);
 		buf = getuserinput();
 		argz = parsestring(buf);
+		while (argz[k])
+		{ printf("%s\n", argz[k++]); }
+		k = 0;
 		if (argz[0] != NULL)
 		{
 			if (argz[0][0] != '/')

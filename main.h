@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <signal.h>
 #define BUFFSIZE 1024
 #define PARSESIZE 40
 #define BUILTIN 3
@@ -29,6 +30,7 @@ char *_strcpy(char *dest, char *src);
 int _strlen(const char *str);
 char *_strdup(char *src);
 int _strcmp(char *s1, char *s2);
+void signalhandler(int sig);
 
 #endif
 
