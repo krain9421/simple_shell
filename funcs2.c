@@ -65,11 +65,11 @@ char **getpaths()
 	{
 		parsedpath[i] = _strdup(parse);
 		if (parsedpath[i] == NULL)
-		{ 
+		{
 			for (; k < i; k++)
 			{ free(parsedpath[k]); }
 			free(parsedpath);
-			exit(EXIT_FAILURE); 
+			exit(EXIT_FAILURE);
 		}
 		parse = strtok(NULL, ":");
 		i++;
