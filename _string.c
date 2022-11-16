@@ -91,7 +91,7 @@ char *_strdup(char *src)
 	if (dup == NULL)
 	{
 		free(dup);
-		exit(1);
+		return (NULL);
 	}
 
 	while (src_size--)

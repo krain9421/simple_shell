@@ -109,6 +109,7 @@ char **parsestring(char *text)
 * executecom - executes a program or command
 * @argz: string vector that contains the command arguments
 * @argv: string vector from main
+* @env: environment vector from main
 *
 * Return: 1 if successful
 * 0 if failed
@@ -178,23 +179,17 @@ void loopshell(char **argv, char **env)
 				argz[0] = _strdup(path);
 			}
 			stat = executecom(argz, argv, env);
-			free(buf);
-			free(argz[0]);
-			free(argz);
+			free(buf), free(argz[0]), free(argz);
 			if (isrelative)
 			{
+				free(path);
 				while (parsedpath[i])
 				{ free(parsedpath[i++]); }
 				free(parsedpath);
-				free(path);
 			}
 		}
 		else
-		{
-			free(buf);
-			free(argz[0]);
-			free(argz);
-		}
+		{ free(buf), free(argz[0]), free(argz); }
 	} while (stat);
 }
 
