@@ -129,4 +129,3 @@ char *getpath(char **parsedpath, char *exe, const char *src)
 	return (_strdup(parsedpath[j]));
 }
 
-
