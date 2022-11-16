@@ -164,16 +164,13 @@ void loopshell(char **argv, char **env)
 {
 	char *buf, *path = NULL, cwd[PATH_MAX];
 	char **argz, **parsedpath = NULL;
-	int stat = 1, i = 0, k = 0, isrelative = 0;
+	int stat = 1, i = 0, isrelative = 0;
 
 	getcwd(cwd, sizeof(cwd));
 	do {
 		write(1, "#cisfun$ ", 9);
 		buf = getuserinput();
 		argz = parsestring(buf);
-		while (argz[k])
-		{ printf("%s\n", argz[k++]); }
-		k = 0;
 		if (argz[0] != NULL)
 		{
 			if (argz[0][0] != '/')
