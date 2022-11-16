@@ -130,12 +130,18 @@ int executecom(char **argz, char **argv, char **env)
 	if (argz[0])
 	{
 		pid = fork();
+		/*printf("fork() called\n");*/
 
 		if (pid == 0)
 		{
+		/*printf("Child[%d] started from Parent[%d]\n", getpid(), getppid());*/
 			if (execve(argz[0], argz, env) == -1)
+			{
 				perror(argv[0]);
-			return (1);
+			}
+
+			/*printf("Child[%d] ended\n", getpid());*/
+			exit(EXIT_FAILURE);
 		}
 		else if (pid < 0)
 		{
@@ -145,16 +151,17 @@ int executecom(char **argz, char **argv, char **env)
 
 		else
 		{
+			/*printf("Parent[%d] started\n", getpid());*/
 			wait(NULL);
-			return (1);
+			/*printf("Parent[%d] ended\n", getpid());*/
 		}
 	}
 	else
 	{
 		perror(argv[0]);
 		wait(NULL);
-		return (1);
 	}
+	return (1);
 }
 
 /**
