@@ -24,11 +24,13 @@ char *getuserinput()
 		exit(EXIT_FAILURE);
 	}
 	/* Usage: exit */
-	if (_strcmp(tbuf, "exit\n") == 0)
-	{
-		free(tbuf);
-		exit(EXIT_SUCCESS);
-	}
+	/**
+	*if (_strcmp(tbuf, "exit\n") == 0)
+	*{
+	*	free(tbuf);
+	*	exit(EXIT_SUCCESS);
+	*}
+	*/
 
 	return (tbuf);
 }
@@ -165,8 +167,8 @@ int executecom(char **argz, char **argv, char **env)
 
 void loopshell(char **argv, char **env)
 {
-	char *buf, *path, cwd[PATH_MAX];
-	char **argz, **parsedpath;
+	char *buf, *path = NULL, cwd[PATH_MAX];
+	char **argz, **parsedpath = NULL;
 	int stat = 1, i = 0, isrelative = 0;
 
 	getcwd(cwd, sizeof(cwd));
@@ -178,11 +180,11 @@ void loopshell(char **argv, char **env)
 		{
 			if (argz[0][0] != '/')
 			{
-				isrelative = 1;
-				parsedpath = getpaths();
-				path = getpath(parsedpath, argz[0], cwd);
-				free(argz[0]);
-				argz[0] = _strdup(path);
+				/*isrelative = 1;*/
+				/*parsedpath = getpaths();*/
+				/*path = getpath(parsedpath, argz[0], cwd);*/
+				/*free(argz[0]);*/
+				/*argz[0] = _strdup(path);*/
 			}
 			stat = executecom(argz, argv, env);
 			free(buf), free(argz[0]), free(argz);
