@@ -170,7 +170,7 @@ void loopshell(char **argv, char **env)
 				free(argz);
 				i = 0;
 				free(buf);
-				exit(EXIT_SUCCESS);
+				_exit(EXIT_SUCCESS);
 			}
 			if (argz[0][0] != '/')
 			{
