@@ -157,7 +157,8 @@ void loopshell(char **argv, char **env)
 
 	getcwd(cwd, sizeof(cwd));
 	do {
-		write(1, "#cisfun$ ", 9);
+		if (isatty(STDIN_FILENO))
+		{ write(1, "#cisfun$ ", 9); }
 		buf = getuserinput();
 		argz = parsestring(buf);
 		if (argz[0] != NULL)
