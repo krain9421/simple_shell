@@ -6,7 +6,7 @@
 * @sig: int
 *
 * Return: void
-*/
+**/
 
 void signalhandler(int sig)
 {
@@ -19,7 +19,7 @@ void signalhandler(int sig)
 * getuserinput - stores user input in a string
 *
 * Return: character pointer with stored input
-*/
+**/
 
 char *getuserinput()
 {
@@ -52,7 +52,7 @@ char *getuserinput()
 *
 * Return: address to the pointer that holds
 * all the parsed strings
-*/
+**/
 
 char **parsestring(char *text)
 {
@@ -108,7 +108,7 @@ char **parsestring(char *text)
 *
 * Return: 1 if successful
 * 0 if failed
-*/
+**/
 
 int executecom(char **argz, char **argv, char **env)
 {
@@ -158,7 +158,7 @@ int executecom(char **argz, char **argv, char **env)
 * @env: environment vector from main
 *
 * Return: void
-*/
+**/
 
 void loopshell(char **argv, char **env)
 {
