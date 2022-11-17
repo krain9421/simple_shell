@@ -176,7 +176,7 @@ void loopshell(char **argv, char **env)
 			if (argz[0][0] != '/')
 			{
 				/*isrelative = 1;*/
-				/*parsedpath = getpaths();*/
+				/*parsedpath = getpaths(env);*/
 				/*path = getpath(parsedpath, argz[0], cwd);*/
 				/*free(argz[0]);*/
 				/*argz[0] = _strdup(path);*/

@@ -15,15 +15,15 @@
 #define PARSESIZE 40
 #define BUILTIN 3
 
-extern char **environ;
+/*extern char **environ;*/
 
 char *getuserinput();
 char **parsestring(char *text);
 int isbuiltin(char **argv);
 void loopshell(char **argv, char **env);
 int executecom(char **argz, char **argv, char **env);
-char *_getenv(const char *name);
-char **getpaths();
+char *_getenv(const char *name, char **env);
+char **getpaths(char **env);
 char *getpath(char **parsedpath, char *exe, const char *src);
 char *_strcat(char *dest, char *src);
 char *_strcpy(char *dest, char *src);

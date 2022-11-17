@@ -8,23 +8,23 @@
 * Return: string containing variable value
 */
 
-char *_getenv(const char *name)
+char *_getenv(const char *name, char **env)
 {
 	int i = 0, j = 0;
 	char *finalpath;
 
-	while (environ[i])
+	while (env[i])
 	{
 		for (; name[j]; j++)
 		{
-			if (name[j] == environ[i][j])
+			if (name[j] == env[i][j])
 			{ continue; }
 			else
 			{ break; }
 		}
 		if (name[j] == '\0')
 		{
-			finalpath = _strdup(environ[i] + _strlen(name) + 1);
+			finalpath = _strdup(env[i] + _strlen(name) + 1);
 			return (finalpath);
 		}
 		i++;
@@ -38,14 +38,14 @@ char *_getenv(const char *name)
 * Return: string array containing each path
 */
 
-char **getpaths()
+char **getpaths(char **env)
 {
 	char *parse, *pathvalue, *pathvalue2;
 	int i = 0, k = 0, sz = 0;
 	char **parsedpath;
 
 	/* Getting the size of the array to hold paths */
-	pathvalue2 = _getenv("PATH");
+	pathvalue2 = _getenv("PATH", env);
 	parse = strtok(pathvalue2, ":");
 	while (parse != NULL)
 	{
@@ -59,7 +59,7 @@ char **getpaths()
 	if (parsedpath == NULL)
 	{ free(parsedpath), exit(EXIT_FAILURE); }
 
-	pathvalue = _getenv("PATH");
+	pathvalue = _getenv("PATH", env);
 	parse = strtok(pathvalue, ":");
 	while (parse != NULL)
 	{
