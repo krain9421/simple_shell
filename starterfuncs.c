@@ -103,6 +103,8 @@ int executecom(char **argz, char **argv, char **env)
 {
 	pid_t pid;
 
+	if (_strcmp(argz[0], "exit") == 0)
+	{ return (0); }
 	if (argz[0])
 	{
 		pid = fork();
@@ -163,15 +165,15 @@ void loopshell(char **argv, char **env)
 		argz = parsestring(buf);
 		if (argz[0] != NULL)
 		{
-			if (_strcmp(argz[0], "exit") == 0)
-			{
-				while (argz[i])
-				{ free(argz[i++]); }
-				free(argz);
-				i = 0;
-				free(buf);
-				_exit(EXIT_SUCCESS);
-			}
+			/**
+			*if (_strcmp(argz[0], "exit") == 0)
+			*	while (argz[i])
+			*	{ free(argz[i++]); }
+			*	free(argz);
+			*	i = 0;
+			*	free(buf);
+			*	_exit(EXIT_SUCCESS);
+			*/
 			if (argz[0][0] != '/')
 			{
 				/*isrelative = 1;*/
