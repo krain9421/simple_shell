@@ -89,16 +89,16 @@ char **parsestring(char *text)
 	return (tparsed);
 }
 	/**
-	 *textcpy = _strdup(text);
-	 *parse = strtok(textcpy, "\n");
-	 *while (parse)
-	 *{
-	 *parse = strtok(NULL, "\n");
-	 *sz++;
-	 *}
-	 *free(parse);
-	 *free(textcpy);
-	 */
+	 * textcpy = _strdup(text);
+	 * parse = strtok(textcpy, "\n");
+	 * while (parse)
+	 * {
+	 * parse = strtok(NULL, "\n");
+	 * sz++;
+	 * }
+	 * free(parse);
+	 * free(textcpy);
+	 **/
 
 /**
 * executecom - executes a program or command
