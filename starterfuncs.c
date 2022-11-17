@@ -73,13 +73,13 @@ char **parsestring(char *text)
 	if (tparsed == NULL)
 	{ free(tparsed), exit(1); }
 
-	parse = strtok(textcpy2, "\n");
+	parse = strtok(textcpy2, "\n ");
 	while (parse)
 	{
 		tparsed[i] = _strdup(parse);
 		if (tparsed[i] == NULL)
 		{ free(tparsed[i]), free(tparsed), exit(1); }
-		parse = strtok(NULL, "\n");
+		parse = strtok(NULL, "\n ");
 		i++;
 	}
 	tparsed[i] = NULL;
@@ -162,15 +162,24 @@ int executecom(char **argz, char **argv, char **env)
 
 void loopshell(char **argv, char **env)
 {
-	char *buf, *path = NULL, cwd[PATH_MAX];
-	char **argz, **parsedpath = NULL;
-	int stat = 1, i = 0, isrelative = 0;
+	char *buf, cwd[PATH_MAX];
+	char **argz;
+	int stat = 1, i = 0;
 
 	getcwd(cwd, sizeof(cwd));
 	do {
 		write(1, "#cisfun$ ", 9);
 		buf = getuserinput();
 		argz = parsestring(buf);
+		if (_strcmp(argz[0], "exit") == 0)
+		{
+			while (argz[i])
+			{ free(argz[i++]); }
+			free(argz);
+			i = 0;
+			free(buf);
+			exit(EXIT_SUCCESS);
+		}
 		if (argz[0] != NULL)
 		{
 			if (argz[0][0] != '/')
@@ -182,14 +191,11 @@ void loopshell(char **argv, char **env)
 				/*argz[0] = _strdup(path);*/
 			}
 			stat = executecom(argz, argv, env);
-			free(buf), free(argz[0]), free(argz);
-			if (isrelative)
-			{
-				free(path);
-				while (parsedpath[i])
-				{ free(parsedpath[i++]); }
-				free(parsedpath);
-			}
+			free(buf);
+			while (argz[i])
+			{ free(argz[i++]); }
+			free(argz);
+			i = 0;
 		}
 		else
 		{ free(buf), free(argz[0]), free(argz); }

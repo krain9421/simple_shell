@@ -4,6 +4,7 @@
 /**
 * _getenv - gets an environment variable
 * @name: variable name
+* @env: environment vector
 *
 * Return: string containing variable value
 */
@@ -34,7 +35,7 @@ char *_getenv(const char *name, char **env)
 
 /**
 * getpaths - stores all the path values in an array
-*
+* @env: environment vector
 * Return: string array containing each path
 */
 
