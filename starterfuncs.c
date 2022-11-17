@@ -171,17 +171,17 @@ void loopshell(char **argv, char **env)
 		write(1, "#cisfun$ ", 9);
 		buf = getuserinput();
 		argz = parsestring(buf);
-		if (_strcmp(argz[0], "exit") == 0)
-		{
-			while (argz[i])
-			{ free(argz[i++]); }
-			free(argz);
-			i = 0;
-			free(buf);
-			exit(EXIT_SUCCESS);
-		}
 		if (argz[0] != NULL)
 		{
+			if (_strcmp(argz[0], "exit") == 0)
+			{
+				while (argz[i])
+				{ free(argz[i++]); }
+				free(argz);
+				i = 0;
+				free(buf);
+				exit(EXIT_SUCCESS);
+			}
 			if (argz[0][0] != '/')
 			{
 				/*isrelative = 1;*/
