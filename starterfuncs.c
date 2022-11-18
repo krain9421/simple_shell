@@ -67,7 +67,7 @@ char **parsestring(char *text, char *cwd)
 		textcpy = strdup(text);
 		parse2 = strtok(textcpy, "\n "), parsedpath = getpaths(environ);
 		path = getpath(parsedpath, parse2, cwd);
-		free(parse2);
+		free(parse2), free(parsedpath);
 	}
 	if (text == NULL)
 	{
@@ -94,8 +94,7 @@ char **parsestring(char *text, char *cwd)
 	tparsed[i] = NULL;
 	free(parse), free(textcpy2);
 	if (isrelative && tparsed[0] != NULL)
-	{ free(tparsed[0]), tparsed[0] = _strdup(path); }
-	free(path), free(parsedpath);
+	{ free(tparsed[0]), tparsed[0] = (path); }
 	return (tparsed);
 }
 
