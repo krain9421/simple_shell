@@ -49,30 +49,39 @@ char *getuserinput()
 /**
 * parsestring - parses through a string
 * @text: string to be parsed
+* @cwd: current working directory
 *
 * Return: address to the pointer that holds
 * all the parsed strings
 **/
 
-char **parsestring(char *text)
+char **parsestring(char *text, char *cwd)
 {
-	int i = 0, sz = PARSESIZE;
-	char *parse, *textcpy2;
-	char **tparsed;
+	int i = 0, sz = PARSESIZE, isrelative = 0;
+	char *parse, *parse2, *textcpy2, *textcpy, *path = NULL;
+	char **tparsed, **parsedpath = NULL;
 
+	if (text[0] != '/' && text != NULL)
+	{
+		isrelative = 1;
+		textcpy = strdup(text);
+		parse2 = strtok(textcpy, "\n "), parsedpath = getpaths(environ);
+		path = getpath(parsedpath, parse2, cwd);
+		free(parse2);
+	}
 	if (text == NULL)
 	{
 		tparsed = malloc(1 * sizeof(char *));
 		if (tparsed == NULL)
 		{ free(tparsed), exit(1); }
 		tparsed[0] = NULL;
+
 		return (tparsed);
 	}
 	textcpy2 = _strdup(text);
 	tparsed = malloc((sz) * sizeof(char *));
 	if (tparsed == NULL)
 	{ free(tparsed), exit(1); }
-
 	parse = strtok(textcpy2, "\n ");
 	while (parse)
 	{
@@ -83,9 +92,10 @@ char **parsestring(char *text)
 		i++;
 	}
 	tparsed[i] = NULL;
-	free(parse);
-	free(textcpy2);
-
+	free(parse), free(textcpy2);
+	if (isrelative && tparsed[0] != NULL)
+	{ free(tparsed[0]), tparsed[0] = _strdup(path); }
+	free(path), free(parsedpath);
 	return (tparsed);
 }
 
@@ -103,7 +113,7 @@ int executecom(char **argz, char **argv, char **env)
 {
 	pid_t pid;
 
-	if (_strcmp(argz[0], "exit") == 0)
+	if (argz[0] && _strcmp(argz[0], "exit") == 0)
 	{ return (0); }
 	if (argz[0])
 	{
@@ -162,9 +172,9 @@ void loopshell(char **argv, char **env)
 		if (isatty(STDIN_FILENO))
 		{ write(1, "#cisfun$ ", 9); }
 		buf = getuserinput();
-		argz = parsestring(buf);
-		if (argz[0] != NULL)
+		if (_strcmp(buf, "\n") != 0)
 		{
+			argz = parsestring(buf, cwd);
 			/**
 			*if (_strcmp(argz[0], "exit") == 0)
 			*	while (argz[i])
@@ -190,7 +200,7 @@ void loopshell(char **argv, char **env)
 			i = 0;
 		}
 		else
-		{ free(buf), free(argz[0]), free(argz); }
+		{ free(buf);/*, free(argz[0]), free(argz);*/ }
 	} while (stat);
 }
 

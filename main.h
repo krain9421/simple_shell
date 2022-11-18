@@ -9,16 +9,16 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-/*#include <errno.h>*/
+#include <errno.h>
 #include <signal.h>
 #define BUFFSIZE 1024
 #define PARSESIZE 40
 #define BUILTIN 3
 
-/*extern char **environ;*/
+extern char **environ;
 
 char *getuserinput();
-char **parsestring(char *text);
+char **parsestring(char *text, char *cwd);
 int isbuiltin(char **argv);
 void loopshell(char **argv, char **env);
 int executecom(char **argz, char **argv, char **env);

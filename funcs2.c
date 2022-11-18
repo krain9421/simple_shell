@@ -47,6 +47,7 @@ char **getpaths(char **env)
 
 	/* Getting the size of the array to hold paths */
 	pathvalue2 = _getenv("PATH", env);
+	pathvalue = _strdup(pathvalue2);
 	parse = strtok(pathvalue2, ":");
 	while (parse != NULL)
 	{
@@ -58,9 +59,8 @@ char **getpaths(char **env)
 
 	parsedpath = malloc((sz + 1) * sizeof(char *));
 	if (parsedpath == NULL)
-	{ free(parsedpath), exit(EXIT_FAILURE); }
+	{ free(parsedpath), free(pathvalue), exit(EXIT_FAILURE); }
 
-	pathvalue = _getenv("PATH", env);
 	parse = strtok(pathvalue, ":");
 	while (parse != NULL)
 	{
@@ -69,7 +69,7 @@ char **getpaths(char **env)
 		{
 			for (; k < i; k++)
 			{ free(parsedpath[k]); }
-			free(parsedpath);
+			free(parsedpath), free(parse), free(pathvalue);
 			exit(EXIT_FAILURE);
 		}
 		parse = strtok(NULL, ":");
@@ -77,6 +77,7 @@ char **getpaths(char **env)
 	}
 	parsedpath[i] = NULL;
 	free(parse), free(pathvalue);
+
 	return (parsedpath);
 }
 
@@ -105,7 +106,7 @@ char *getpath(char **parsedpath, char *exe, const char *src)
 	while (parsedpath[j])
 	{
 		len = _strlen(parsedpath[j]) + _strlen(exe);
-		parsedpathcpy = malloc((len + 2) * sizeof(char *));
+		parsedpathcpy = malloc((len + 2) * sizeof(char));
 		if (parsedpathcpy == NULL)
 		{ free(parsedpathcpy), exit(1); }
 		parsedpathcpy = _strcpy(parsedpathcpy, parsedpath[j]);
@@ -126,7 +127,7 @@ char *getpath(char **parsedpath, char *exe, const char *src)
 	}
 	free(execpy);
 	chdir(src);
-	/*errno = 2;*/
+	errno = 2;
 	return (_strdup(parsedpath[j]));
 }
 
