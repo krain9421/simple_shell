@@ -44,12 +44,10 @@ char **getpaths(char **env)
 	char *parse, *pathvalue2, *pathvalue;
 	int i = 0, sz = PARSESIZE;
 	char **parsedpath;
-
+	
 	/* Getting the size of the array to hold paths */
 	pathvalue = _getenv("PATH", env);
 	pathvalue2 = _strdup(pathvalue);
-	if (pathvalue2 == NULL)
-	{ free(pathvalue2), exit(EXIT_FAILURE); }
 	/**
 	*pathvalue = _strdup(pathvalue2);
 	*parse = strtok(pathvalue2, ":");

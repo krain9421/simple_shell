@@ -111,11 +111,20 @@ char **parsestring(char *text, char *cwd)
 int executecom(char **argz, char **argv, char **env)
 {
 	pid_t pid;
+	char *errorcmd;
+	int len = 0;
 
 	if (argz[0] && _strcmp(argz[0], "exit") == 0)
 	{ return (0); }
 	if (argz[0])
 	{
+		len = _strlen(argz[0]) + _strlen(argv[0]);
+		errorcmd = malloc((len + 6) * sizeof(char));
+		if (errorcmd == NULL)
+		{ free(errorcmd), exit(1); }
+		errorcmd = _strcpy(errorcmd, argv[0]);
+		errorcmd = _strcat(errorcmd, " : ");
+		errorcmd = _strcat(errorcmd, (argz[0]));
 		pid = fork();
 		/*printf("fork() called\n");*/
 
@@ -124,7 +133,7 @@ int executecom(char **argz, char **argv, char **env)
 		/*printf("Child[%d] started from Parent[%d]\n", getpid(), getppid());*/
 			if (execve(argz[0], argz, env) == -1)
 			{
-				perror(argv[0]);
+				perror(errorcmd);
 				free(argz[0]), free(argz);
 			}
 
@@ -143,12 +152,14 @@ int executecom(char **argz, char **argv, char **env)
 			wait(NULL);
 			/*printf("Parent[%d] ended\n", getpid());*/
 		}
+		free(errorcmd);
 	}
 	else
 	{
 		perror(argv[0]);
 		wait(NULL);
 	}
+
 	return (1);
 }
 
